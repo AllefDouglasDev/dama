@@ -10,21 +10,21 @@ public class Tabuleiro extends JPanel
 {
 	private static final long serialVersionUID = 1L;
 	private Dama dama;
-	private PecaMelhor[][] tabuleiro;
+	private Peca[][] tabuleiro;
 	private int jogadorAtual = 1;
-	private PecaMelhor pecaAMover;
+	private Peca pecaAMover;
 
 	public Tabuleiro()
 	{
 		dama = new Dama();
 		
 		setLayout(new GridLayout(8,8));
-		tabuleiro = new PecaMelhor[8][8];
+		tabuleiro = new Peca[8][8];
 
 		for(int l = 0; l < 8; l++)
 			for(int c = 0; c < 8; c++)
 			{
-				PecaMelhor peca = new PecaMelhor();
+				Peca peca = new Peca();
 				peca.setCasa(new Casa(c, l));
 				peca.addActionListener(onPecaClicada(peca, c, l));
 				
@@ -44,7 +44,7 @@ public class Tabuleiro extends JPanel
 				tabuleiro[j][i].setEstado(posicoesIniciais[j][i]);
 	}
 	
-	public ActionListener onPecaClicada(final PecaMelhor pecaClicada, final int x, final int y) {
+	public ActionListener onPecaClicada(final Peca pecaClicada, final int x, final int y) {
 		return e -> {
 			switch (pecaClicada.getEstado()) {
 				case VAZIO:
@@ -61,7 +61,7 @@ public class Tabuleiro extends JPanel
 		};
 	}
 
-	public void pecaVaziaClicada(PecaMelhor pecaClicada, int x, int y) {
+	public void pecaVaziaClicada(Peca pecaClicada, int x, int y) {
 		if (pecaAMover == null) return;
 		
 		Casa casaAMover = new Casa(x, y);
@@ -84,18 +84,18 @@ public class Tabuleiro extends JPanel
 	}
 	
 	
-	public void pecaBrancaClicada(PecaMelhor pecaClicada, int x, int y) {
+	public void pecaBrancaClicada(Peca pecaClicada, int x, int y) {
 		pecaAMover = pecaClicada;
 		pecaAMover.setCasa(new Casa(x, y));
 	}
 	
 	
-	public void pecaPretaClicada(PecaMelhor pecaClicada, int x, int y) {
+	public void pecaPretaClicada(Peca pecaClicada, int x, int y) {
 		pecaAMover = pecaClicada;
 		pecaAMover.setCasa(new Casa(x, y));
 	}
 	
-	public boolean moverParaCasaDistante(Casa casaAMover, PecaMelhor pecaAMover) {
+	public boolean moverParaCasaDistante(Casa casaAMover, Peca pecaAMover) {
 		boolean moveu = false;
 		ArrayList<Casa> casasDistantes = pecaAMover.getCasasDistantes();
 		ArrayList<Casa> casasProximas = pecaAMover.getCasasProximas();
@@ -109,7 +109,7 @@ public class Tabuleiro extends JPanel
 		return moveu;
 	}
 
-	private boolean comerComPecaBranca(Casa casaAMover, PecaMelhor pecaAMover,
+	private boolean comerComPecaBranca(Casa casaAMover, Peca pecaAMover,
 			ArrayList<Casa> casasDistantes, ArrayList<Casa> casasProximas) {
 		boolean moveu = false;
 		
@@ -118,7 +118,7 @@ public class Tabuleiro extends JPanel
 		
 		if (casaAMover.equals(jumpUpRight)) {
 			Casa upRight = casasProximas.get(1);
-			PecaMelhor pecaASerComida = tabuleiro[upRight.getX()][upRight.getY()];
+			Peca pecaASerComida = tabuleiro[upRight.getX()][upRight.getY()];
 			
 			if (pecaASerComida.getEstado() == Estado.PRETO) {
 				tabuleiro[upRight.getX()][upRight.getY()].setEstado(Estado.VAZIO);
@@ -127,7 +127,7 @@ public class Tabuleiro extends JPanel
 			}
 		} else if (casaAMover.equals(jumpUpLeft)) {
 			Casa upLeft = casasProximas.get(0);
-			PecaMelhor pecaASerComida = tabuleiro[upLeft.getX()][upLeft.getY()];
+			Peca pecaASerComida = tabuleiro[upLeft.getX()][upLeft.getY()];
 			
 			if (pecaASerComida.getEstado() == Estado.PRETO) {
 				tabuleiro[upLeft.getX()][upLeft.getY()].setEstado(Estado.VAZIO);
@@ -139,7 +139,7 @@ public class Tabuleiro extends JPanel
 		return moveu;
 	}
 	
-	private boolean comerComPecaPreta(Casa casaAMover, PecaMelhor pecaAMover,
+	private boolean comerComPecaPreta(Casa casaAMover, Peca pecaAMover,
 			ArrayList<Casa> casasDistantes, ArrayList<Casa> casasProximas) {
 		boolean moveu = false;
 		
@@ -148,7 +148,7 @@ public class Tabuleiro extends JPanel
 		
 		if (casaAMover.equals(jumpDownRight)) {
 			Casa downRight = casasProximas.get(3);
-			PecaMelhor pecaASerComida = tabuleiro[downRight.getX()][downRight.getY()];
+			Peca pecaASerComida = tabuleiro[downRight.getX()][downRight.getY()];
 			
 			if (pecaASerComida.getEstado() == Estado.BRANCO) {
 				tabuleiro[downRight.getX()][downRight.getY()].setEstado(Estado.VAZIO);
@@ -157,7 +157,7 @@ public class Tabuleiro extends JPanel
 			}
 		} else if (casaAMover.equals(jumpDownLeft)) {
 			Casa downLeft = casasProximas.get(2);
-			PecaMelhor pecaASerComida = tabuleiro[downLeft.getX()][downLeft.getY()];
+			Peca pecaASerComida = tabuleiro[downLeft.getX()][downLeft.getY()];
 			
 			if (pecaASerComida.getEstado() == Estado.BRANCO) {
 				tabuleiro[downLeft.getX()][downLeft.getY()].setEstado(Estado.VAZIO);
@@ -169,7 +169,7 @@ public class Tabuleiro extends JPanel
 		return moveu;
 	}
 	
-	public void mover(PecaMelhor peca, int paraX, int paraY) {
+	public void mover(Peca peca, int paraX, int paraY) {
 		tabuleiro[paraX][paraY].setCasa(peca.getCasa());
 		tabuleiro[paraX][paraY].setEstado(peca.getEstado());
 		
