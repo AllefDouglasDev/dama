@@ -6,7 +6,7 @@ public class Dama {
 	
 	private ArrayList<Casa> casasPermitidas;
 	
-	public Estado[][] posicoesIniciais() {
+	public Estado[][] getPosicoesIniciais() {
 		Estado[][] posicoes = new Estado[8][8];
 		
 		limparPosicoes(posicoes);
