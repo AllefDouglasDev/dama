@@ -8,7 +8,7 @@ public class Jogo extends JFrame
 
 	public Jogo()
 	{
-		super("Reversi");
+		super("Dama");
 		getContentPane().add(new Tabuleiro());
 		pack();
 		setVisible(true);

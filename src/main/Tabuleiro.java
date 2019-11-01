@@ -66,11 +66,14 @@ public class Tabuleiro extends JPanel
 		
 		Casa casaAMover = new Casa(x, y);
 		
+		// Se o jogador atual não tiver clicando nas suas peças
+		// Se a casa para onde a peça vai não for válida
 		if ((jogadorAtual == 1 && pecaAMover.getEstado() != Estado.BRANCO) ||
-			(jogadorAtual == 2 && pecaAMover.getEstado() != Estado.PRETO))
+			(jogadorAtual == 2 && pecaAMover.getEstado() != Estado.PRETO) ||
+			!dama.eCasaPermitida(casaAMover))
 			return;
 		
-		if (dama.eCasaPermitida(casaAMover) && pecaAMover.getCasasProximas().contains(casaAMover)) {
+		if (pecaAMover.getCasasProximas().contains(casaAMover)) {
 			mover(pecaAMover, x, y);
 			jogadorAtual = jogadorAtual == 1 ? 2 : 1;
 			return;
@@ -102,35 +105,33 @@ public class Tabuleiro extends JPanel
 		
 		if (!casasDistantes.contains(casaAMover)) return false;
 		
-		if (pecaAMover.getEstado() == Estado.BRANCO) 
-			moveu = comerComPecaBranca(casaAMover, pecaAMover, casasDistantes, casasProximas); 
-		else
-			moveu = comerComPecaPreta(casaAMover, pecaAMover, casasDistantes, casasProximas); 
+		moveu = (pecaAMover.getEstado() == Estado.BRANCO)
+			? capturarComPecaBranca(casaAMover, pecaAMover, casasDistantes, casasProximas)
+			: capturarComPecaPreta(casaAMover, pecaAMover, casasDistantes, casasProximas); 
 		return moveu;
 	}
 
-	private boolean comerComPecaBranca(Casa casaAMover, Peca pecaAMover,
+	private boolean capturarComPecaBranca(Casa casaAMover, Peca pecaAMover,
 			ArrayList<Casa> casasDistantes, ArrayList<Casa> casasProximas) {
 		boolean moveu = false;
+		Casa casaAMoverEsquerda = casasDistantes.get(0);
+		Casa casaAMoverDireita = casasDistantes.get(1);
 		
-		Casa jumpUpLeft = casasDistantes.get(0);
-		Casa jumpUpRight = casasDistantes.get(1);
-		
-		if (casaAMover.equals(jumpUpRight)) {
-			Casa upRight = casasProximas.get(1);
-			Peca pecaASerComida = tabuleiro[upRight.getX()][upRight.getY()];
+		if (casaAMover.equals(casaAMoverDireita)) {
+			Casa casaDireita = casasProximas.get(1);
+			Peca pecaASerCapturada = tabuleiro[casaDireita.getX()][casaDireita.getY()];
 			
-			if (pecaASerComida.getEstado() == Estado.PRETO) {
-				tabuleiro[upRight.getX()][upRight.getY()].setEstado(Estado.VAZIO);
+			if (pecaASerCapturada.getEstado() == Estado.PRETO) {
+				tabuleiro[casaDireita.getX()][casaDireita.getY()].setEstado(Estado.VAZIO);
 				mover(pecaAMover, casaAMover.getX(), casaAMover.getY());
 				moveu = true;
 			}
-		} else if (casaAMover.equals(jumpUpLeft)) {
-			Casa upLeft = casasProximas.get(0);
-			Peca pecaASerComida = tabuleiro[upLeft.getX()][upLeft.getY()];
+		} else if (casaAMover.equals(casaAMoverEsquerda)) {
+			Casa casaEsquerda = casasProximas.get(0);
+			Peca pecaASerCapturada = tabuleiro[casaEsquerda.getX()][casaEsquerda.getY()];
 			
-			if (pecaASerComida.getEstado() == Estado.PRETO) {
-				tabuleiro[upLeft.getX()][upLeft.getY()].setEstado(Estado.VAZIO);
+			if (pecaASerCapturada.getEstado() == Estado.PRETO) {
+				tabuleiro[casaEsquerda.getX()][casaEsquerda.getY()].setEstado(Estado.VAZIO);
 				mover(pecaAMover, casaAMover.getX(), casaAMover.getY());
 				moveu = true;
 			}
@@ -139,28 +140,28 @@ public class Tabuleiro extends JPanel
 		return moveu;
 	}
 	
-	private boolean comerComPecaPreta(Casa casaAMover, Peca pecaAMover,
+	private boolean capturarComPecaPreta(Casa casaAMover, Peca pecaAMover,
 			ArrayList<Casa> casasDistantes, ArrayList<Casa> casasProximas) {
 		boolean moveu = false;
 		
-		Casa jumpDownLeft = casasDistantes.get(2);
-		Casa jumpDownRight = casasDistantes.get(3);
+		Casa casaAMoverEsquerda = casasDistantes.get(2);
+		Casa casaAMoverDireita = casasDistantes.get(3);
 		
-		if (casaAMover.equals(jumpDownRight)) {
-			Casa downRight = casasProximas.get(3);
-			Peca pecaASerComida = tabuleiro[downRight.getX()][downRight.getY()];
+		if (casaAMover.equals(casaAMoverDireita)) {
+			Casa casaDireita = casasProximas.get(3);
+			Peca pecaASerCapturada = tabuleiro[casaDireita.getX()][casaDireita.getY()];
 			
-			if (pecaASerComida.getEstado() == Estado.BRANCO) {
-				tabuleiro[downRight.getX()][downRight.getY()].setEstado(Estado.VAZIO);
+			if (pecaASerCapturada.getEstado() == Estado.BRANCO) {
+				tabuleiro[casaDireita.getX()][casaDireita.getY()].setEstado(Estado.VAZIO);
 				mover(pecaAMover, casaAMover.getX(), casaAMover.getY());
 				moveu = true;
 			}
-		} else if (casaAMover.equals(jumpDownLeft)) {
-			Casa downLeft = casasProximas.get(2);
-			Peca pecaASerComida = tabuleiro[downLeft.getX()][downLeft.getY()];
+		} else if (casaAMover.equals(casaAMoverEsquerda)) {
+			Casa casaEsquerda = casasProximas.get(2);
+			Peca pecaASerCapturada = tabuleiro[casaEsquerda.getX()][casaEsquerda.getY()];
 			
-			if (pecaASerComida.getEstado() == Estado.BRANCO) {
-				tabuleiro[downLeft.getX()][downLeft.getY()].setEstado(Estado.VAZIO);
+			if (pecaASerCapturada.getEstado() == Estado.BRANCO) {
+				tabuleiro[casaEsquerda.getX()][casaEsquerda.getY()].setEstado(Estado.VAZIO);
 				mover(pecaAMover, casaAMover.getX(), casaAMover.getY());
 				moveu = true;
 			}
