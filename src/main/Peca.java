@@ -8,6 +8,8 @@ import javax.swing.JButton;
 
 public class Peca extends JButton
 {
+	private static final long serialVersionUID = 1L;
+
 	private static int tamanho = 64;
 	
 	private Estado estado;
